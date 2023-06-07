@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 
 const app = express();
 let items  = [];
+let workItems = [];
 
 app.set('view engine', 'ejs');
 
@@ -21,15 +22,23 @@ app.get("/",function(req,res){
     let day = today.toLocaleDateString("en-US",options);
 
     res.render("lists",{
-        kindOfDay : day,
+        listTitle : day,
         newListItems : items
     }); 
 })
 
 app.post("/",function(req,res){
     let item  = req.body.newItem;
+    if(req.body.list === "Work"){
+        workItems.push(item);
+        res.redirect("/work");
+    }
     items.push(item);
-    res.redirect("/")
+    res.redirect("/");
+})
+
+app.get("/work",function(req,res){
+    res.render("lists" , {listTitle:"Work List",newListItems: workItems })
 })
 
 app.listen(3000, function(){
